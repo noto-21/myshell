@@ -12,7 +12,7 @@ void prompt()
 
 void input(char *in)
 {
-	fgets(input, MAX_INPUT_LENGTH, stdin);
+	fgets(in, MAX_INPUT_LENGTH, stdin);
 	
 	in[strcspn(in, "\n")] = '\0';//Remove newline char
 }
