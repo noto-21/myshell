@@ -28,7 +28,7 @@ int main()
     //Run loop
     while (1) 
     {
-        printf("%s/|\\\\", getcwd(cwd, sizeof(cwd)));//Prompt for input
+        printf("myshell | %s | ", getcwd(cwd, sizeof(cwd)));//Prompt for input
         if (fgets(in, sizeof(in), stdin) == NULL)
 		break;//Exit on EOF
 

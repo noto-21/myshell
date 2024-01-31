@@ -16,8 +16,10 @@ void c_dir(char *path)
         //Use getcwd to get the current working directory.
         //getcwd fills the array 'cwd' with the absolute pathname of the current working directory
 	
-        if (getcwd(cwd, sizeof(cwd)) == NULL)
-            perror("getcwd() error");//Print error mssg
+        if (getcwd(cwd, sizeof(cwd)) != NULL)
+		printf("%s\n", cwd);
+	else
+		perror("getcwd() error");//Print error mssg
     }	
     else 
     {
