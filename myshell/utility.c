@@ -1,8 +1,4 @@
 #include "myshell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 //Change the current working directory
 void c_dir(char *path)
