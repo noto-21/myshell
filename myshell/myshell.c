@@ -16,7 +16,7 @@ void exec_cmd(char *in)
             c_dir(tkn);//Call the function
         } 
 	else
-            printf("Command not recognized.\n");
+            printf("Command not recognized!\n");
     }
 }
 
@@ -28,7 +28,7 @@ int main()
     //Run loop
     while (1) 
     {
-        printf("myshell | %s | ", getcwd(cwd, sizeof(cwd)));//Prompt for input
+        printf("myshell | %s |\n| ", getcwd(cwd, sizeof(cwd)));//Prompt for input
         if (fgets(in, sizeof(in), stdin) == NULL)
 		break;//Exit on EOF
 
