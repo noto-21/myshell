@@ -3,7 +3,7 @@
 
 # Lab #2 - My Custom Shell
 
-Hello
+This is the documentation for my custom shell ***myshell***.
 
 </div>
 <hr>
