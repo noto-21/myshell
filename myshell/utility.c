@@ -3,6 +3,7 @@
 #include <sys/wait.h>//Process management
 #include <fcntl.h>//File control
 #include <dirent.h>//Directory manipulation
+#include <ctype.h>//String/Char manipulation
 
 //Change the current working directory
 void ch_dir(char *path)
@@ -75,12 +76,23 @@ void list_dir(char *dir)
 //List environment strings
 void list_env()
 {
+	//External pointer to an array of strings (char pointers), 
+	//to be found elsewhere on the system; variable to be 
+	//resolved at the linking stage
 	extern char **environ;
-	int i = 0;
-	while (environ[i] != NULL)
+	int i = 0;//Counter variable
+
+	//If there is an error finding environment variables
+	if (environ == NULL)
 	{
-		printf("%s\n", environ[i]);
-		i++;
+		perror("'environ' var.s ERROR");//Print error message
+		return;//Exit the function
+	}
+
+	while (environ[i] != NULL)//While environment strings exist to be read
+	{
+		printf("%s\n", environ[i]);//Print the environment variables
+		i++;//Increment counter
 	}
 }
 
@@ -88,7 +100,28 @@ void list_env()
 //Echo user comments
 void echo_out(char *ech)
 {
-	//Code here
+	//If no string is provided
+	if (ech == NULL)
+	{
+		printf("\n");//Print new line
+		return;//Exit function
+	}
+
+	//String processing
+	char processed[1024];//Buffer w/assumed max length for string processing
+	int i, j = 0;//Counter variables
+	
+	for (i = 0; ech[i] != '\0'; i++)//Iterate until null termination
+	{
+		//If the current char is not a space and the char before it is not a space
+		if (!isspace((unsigned char)ech[i]) || (i > 0 && !isspace((unsigned char)ech[i - 1])))
+			processed[j++] = ech[i];//Include the char in the processed string and iterate 'j'
+	}
+
+	processed[j] = '\0';//Null-terminate processed string
+
+	if (printf("%s", processed) < 0)//Take user input and output it to the screen
+		perror("'printf' ERROR");//Print error message if something goes wrong
 }
 
 //Display user manual
@@ -108,5 +141,6 @@ void suspend()
 //Quit the shell
 void quit()
 {
-	//Code here
+	printf("|> Exiting myshell...goodbye!\n");//Print exit message
+	exit(0);//Successful exit
 }

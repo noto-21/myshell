@@ -25,10 +25,7 @@ void exec_cmd(char *in)
 	else if (strcmp(tkn, "environ") == 0)//List environment command
 		list_env();
 	else if (strcmp(tkn, "echo") == 0)//Echo string command
-	{
-		tkn = strtok(NULL, dlim);
-		echo_out(tkn);
-	}
+		echo_out(in + strlen("echo "));
 	else if (strcmp(tkn, "help") == 0)//Display manual command
 		disp_man();
 	else if (strcmp(tkn, "pause") == 0)//Pause shell command
@@ -48,7 +45,7 @@ int main()
     //Run loop
     while (1) 
     {
-        printf("<%s>\n | ", getcwd(cwd, sizeof(cwd)));//Prompt for input
+        printf("<%s>\n |> ", getcwd(cwd, sizeof(cwd)));//Prompt for input
         if (fgets(in, sizeof(in), stdin) == NULL)
 		break;//Exit on EOF
 
