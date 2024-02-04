@@ -1,4 +1,4 @@
-#include "myshell.h"
+#include "myshell.h"//Include header libraries
 
 //Execute commands
 void exec_cmd(char *in)
@@ -30,27 +30,57 @@ void exec_cmd(char *in)
 		disp_man();
 	else if (strcmp(tkn, "pause") == 0)//Pause shell command
 		suspend();
-	else if (strcmp(tkn, "quit") == 0)//Quit shell command
+	else if (strcmp(tkn, "quit") == 0 || strcmp(tkn, "exit") == 0)//Quit shell command
 		quit();
 	else
-            printf("Command not recognized!\n");
+	{
+		//Fork and exec system calls for external commands
+		pid_t pid = fork();	
+		if (pid == 0)//Child
+		{
+			setenv("parent", "./myshell", 1);//Set parent env. var.
+			execlp(tkn, tkn, NULL);
+			perror("'exec()' ERROR");
+			exit(1);
+		}
+		else if (pid > 0)//Parent
+			waitpid(pid, NULL, 0);//Wait for child to terminate
+		else
+			perror("'fork()' ERROR");
+	}
     }
 }
 
 int main()
 {
-    char in[1024];//Input buffer
-    char cwd[1024];//CWD buffer
+	char in[1024];//Input buffer
+	char cwd[1024];//CWD buffer
 
-    //Run loop
-    while (1) 
-    {
-        printf("<%s>\n |> ", getcwd(cwd, sizeof(cwd)));//Prompt for input
-        if (fgets(in, sizeof(in), stdin) == NULL)
-		break;//Exit on EOF
+	//Get CWD
+	if (getcwd(cwd, sizeof(cwd)) == NULL)//If an error occurs
+	{
+		perror("'getcwd()' ERROR");//Print error message
+		return 1;//Exit w/error
+	}
 
-        exec_cmd(in);//Execute input
-    }
+	//Set shell env. var.
+	char shell_path[2048];
+	snprintf(shell_path, sizeof(shell_path), "shell=%s/myshell", cwd);//Format as safe/size-limited string
+	if (putenv(shell_path) != 0)//Set environment variable
+	{
+		perror("'putenv()' ERROR");//Error message if something goes wrong
+		return 1;//Exit w/error
+	}
 
-    return 0;
+	//Run loop
+	while (1) 
+	{
+		printf("<%s>\n |> ", getcwd(cwd, sizeof(cwd)));//Prompt for input
+		if (fgets(in, sizeof(in), stdin) == NULL)
+			break;//Exit on EOF
+
+		exec_cmd(in);//Execute input
+	}
+
+	return 0;
 }

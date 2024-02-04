@@ -1,9 +1,4 @@
-#include "myshell.h"
-#include <sys/types.h>//Process management/File handling
-#include <sys/wait.h>//Process management
-#include <fcntl.h>//File control
-#include <dirent.h>//Directory manipulation
-#include <ctype.h>//String/Char manipulation
+#include "myshell.h"//Include header libraries
 
 //Change the current working directory
 void ch_dir(char *path)
@@ -124,17 +119,39 @@ void echo_out(char *ech)
 		perror("'printf' ERROR");//Print error message if something goes wrong
 }
 
-//Display user manual
+//Display user manual via text viewer
 void disp_man()
 {
-	//Code here
+    #ifdef _WIN32//If on Windows, open the manual with notepad
+        int res = system("notepad.exe readme");
+	//Check for errors
+        if (res != 0)
+            fprintf(stderr, "ERROR: Unable to display user manual using 'notepad.exe'!\n");
+    #else
+        //Check if 'more' is available on the system
+        if (system("which more > /dev/null") == 0)
+        {
+            //Open manual using 'more'
+            int res = system("more readme");
+            //Check for errors
+	    if (res != 0)
+                fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
+        }
+        else//'more' is not on the system
+            fprintf(stderr, "ERROR: 'more' command is not available on this system!\n");
+    #endif
 }
-
 
 //Pause the shell
 void suspend()
 {
-	//Code here
+	printf("Press 'Enter' to continue...");//Print continue prompt
+	
+	int c;//Char tracking variable
+	while ((c = getchar()) != '\n' && c != EOF)
+		//Discard chars in input buffer
+
+	getchar();//Wait until input is detected
 }
 
 

@@ -1,10 +1,15 @@
-#ifndef MYSHELL_H  // Prevents double inclusion of this header file
+#ifndef MYSHELL_H//Prevents double inclusion of this header file
 #define MYSHELL_H
 
-#include <stdio.h>   // Standard I/O functions
-#include <stdlib.h>  // Standard library for functions like malloc
-#include <string.h>  // String handling functions
-#include <unistd.h>  // Provides access to the POSIX operating system API
+#include <stdio.h>//Standard I/O functions
+#include <stdlib.h>//Standard library for functions like malloc
+#include <string.h>//String handling functions
+#include <unistd.h>//Provides access to the POSIX operating system API
+#include <sys/types.h>//Process management/File handling
+#include <sys/wait.h>//Process management
+#include <fcntl.h>//File control
+#include <dirent.h>//Directory manipulation
+#include <ctype.h>//String/Char manipulation
 
 //Change directories function (cd)
 void ch_dir(char *path);
