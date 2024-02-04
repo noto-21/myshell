@@ -7,6 +7,27 @@
 #include <unistd.h>  // Provides access to the POSIX operating system API
 
 //Change directories function (cd)
-void c_dir(char *path);
+void ch_dir(char *path);
+
+//Clear screen
+void clr_scr();
+
+//List contents of directory
+void list_dir(char *dir);
+
+//List environment strings
+void list_env();
+
+//Echo strings
+void echo_out(char *ech);
+
+//Display user manual
+void disp_man();
+
+//Pause shell
+void suspend();
+
+//Quit shell
+void quit();
 
 #endif
