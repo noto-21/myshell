@@ -20,10 +20,10 @@ void ch_dir(char *path)
     else 
     {
         //If path is provided, change the directory to the specified path
-        
-        // If chdir returns a non-zero value, an error occurred
-        if (chdir(path) != 0)//Print error mssg
-            perror("'chdir()' ERROR");
+	
+	//If 'chdir()' returns a non-zero value, an error occurred
+	if (chdir(path) != 0)
+		perror("'chdir()' ERROR");
     }
 }
 
@@ -31,11 +31,11 @@ void ch_dir(char *path)
 void clr_scr()
 {
 	//If the platform is Windows
-	#ifdef _WIN32
-		system("cls");//Windows system call for clearing screen
-	#else		
-		system("clear");//UNIX/LINUX system call for clearing screen
-	#endif
+#ifdef _WIN32
+	system("cls");//Windows system call for clearing screen
+#else		
+	system("clear");//UNIX/LINUX system call for clearing screen
+#endif
 }
 
 //List contents of a directory
@@ -44,7 +44,7 @@ void list_dir(char *dir)
 	//If no directory arg is specified
 	if (dir == NULL)
 		dir = ".";//List contents of CWD
-	
+
 	//Open the directory for reading
 	DIR *direct = opendir(dir);
 	if (direct == NULL)//If an error occurs
@@ -57,11 +57,7 @@ void list_dir(char *dir)
 	struct dirent *entry;
 	//Read the contents of the directory while not NULL, and print the names
 	while ((entry = readdir(direct)) != NULL)
-		printf("%s | ", entry->d_name);//Print the directory names
-	
-	
-	if (entry == NULL)//If the last entry has been printed
-		printf("\n");//Print a new line
+		printf("| %s |\n", entry->d_name);//Print the directory names
 
 	//Close the directory from reading
 	closedir(direct);
@@ -105,7 +101,7 @@ void echo_out(char *ech)
 	//String processing
 	char processed[1024];//Buffer w/assumed max length for string processing
 	int i, j = 0;//Counter variables
-	
+
 	for (i = 0; ech[i] != '\0'; i++)//Iterate until null termination
 	{
 		//If the current char is not a space and the char before it is not a space
@@ -122,36 +118,36 @@ void echo_out(char *ech)
 //Display user manual via text viewer
 void disp_man()
 {
-    #ifdef _WIN32//If on Windows, open the manual with notepad
-        int res = system("notepad.exe readme");
+#ifdef _WIN32//If on Windows, open the manual with notepad
+	int res = system("notepad.exe readme");
 	//Check for errors
-        if (res != 0)
-            fprintf(stderr, "ERROR: Unable to display user manual using 'notepad.exe'!\n");
-    #else
-        //Check if 'more' is available on the system
-        if (system("which more > /dev/null") == 0)
-        {
-            //Open manual using 'more'
-            int res = system("more readme");
-            //Check for errors
-	    if (res != 0)
-                fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
-        }
-        else//'more' is not on the system
-            fprintf(stderr, "ERROR: 'more' command is not available on this system!\n");
-    #endif
+	if (res != 0)
+		fprintf(stderr, "ERROR: Unable to display user manual using 'notepad.exe'!\n");
+#else
+	//Check if 'more' is available on the system
+	if (system("which more > /dev/null") == 0)
+	{
+		//Open manual using 'more'
+		int res = system("more readme");
+		//Check for errors
+		if (res != 0)
+			fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
+	}
+	else//'more' is not on the system
+		fprintf(stderr, "ERROR: 'more' command is not available on this system!\n");
+#endif
 }
 
 //Pause the shell
 void suspend()
 {
 	printf("Press 'Enter' to continue...");//Print continue prompt
-	
+
 	int c;//Char tracking variable
 	while ((c = getchar()) != '\n' && c != EOF)
 		//Discard chars in input buffer
 
-	getchar();//Wait until input is detected
+		getchar();//Wait until input is detected
 }
 
 
