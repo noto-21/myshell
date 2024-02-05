@@ -51,7 +51,7 @@ void exec_cmd(char *in)
 			disp_man();
 		else if (strcmp(tkn, "pause") == 0)//Pause shell command
 			suspend();
-		else if (strcmp(tkn, "quit") == 0)//Quit shell command
+		else if (strcmp(tkn, "quit") == 0 || strcmp(tkn, "exit") == 0)//Quit shell command
 			quit();
 		else
 		{
