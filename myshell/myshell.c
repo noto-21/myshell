@@ -1,3 +1,8 @@
+/* Noah Toma - 100825559 
+ *
+ * Main ops for myshell
+ */
+
 #include "myshell.h"//Include header libraries
 
 //Skip leading spaces

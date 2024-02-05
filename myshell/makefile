@@ -1,4 +1,6 @@
-# Makefile for myshell project
+# Noah Toma - 100825559
+#
+# Makefile for myshell
 
 # Compiler and compiler flags
 CC = gcc

@@ -1,3 +1,8 @@
+/* Noah Toma - 100825559 
+ *
+ * Header files for myshell
+ */
+
 #ifndef MYSHELL_H//Prevents double inclusion of this header file
 #define MYSHELL_H
 

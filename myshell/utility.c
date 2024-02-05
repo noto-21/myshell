@@ -1,3 +1,8 @@
+/* Noah Toma - 100825559 
+ *
+ * Methods and functions for myshell
+ */
+
 #include "myshell.h"//Include header libraries
 
 //Change the current working directory
