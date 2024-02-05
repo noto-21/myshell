@@ -35,4 +35,7 @@ void suspend();
 //Quit shell
 void quit();
 
+//Execute commands
+void exec_cmd(char *in);
+
 #endif

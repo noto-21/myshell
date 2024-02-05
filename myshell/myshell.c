@@ -1,5 +1,14 @@
 #include "myshell.h"//Include header libraries
 
+//Skip leading spaces
+char* skip_spaces(char* str)
+{
+	while (isspace((unsigned char)*str))
+		str++;
+
+	return str;
+}
+
 //Execute commands
 void exec_cmd(char *in)
 {
@@ -10,6 +19,18 @@ void exec_cmd(char *in)
 	//If first token is a command
 	if (tkn != NULL) 
 	{
+		if (tkn[0] =='\"')
+		{
+			//Find the end of the quoted path
+			char *end_quote = strchr(tkn + 1, '\"');
+			if (end_quote != NULL)
+			{
+				//Replace closing quote with null terminator
+				*end_quote = '\0';
+				tkn = tkn + 1;//Move tkn to the start of the path
+			}
+		}
+
 		if (strcmp(tkn, "cd") == 0)//Change directories command
 		{
 			tkn = strtok(NULL, "\n");//Use newline as delim, not space
@@ -47,7 +68,11 @@ void exec_cmd(char *in)
 
 				setenv("parent", getenv("shell"), 1);//Set parent env. var.
 				setenv("shell", cwd_child, 1);//Set shell env. var.
-				execlp(tkn, tkn, NULL);
+				
+				//Use execvp to consider paths w/spaces
+				char* args[] = {tkn, NULL};
+				execvp(tkn, args);
+
 				perror("'exec()' ERROR");
 				exit(1);
 			}
@@ -59,11 +84,38 @@ void exec_cmd(char *in)
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	char in[1024];//Input buffer
 	char cwd_main[1024];//CWD buffer
 	
+	if (argc == 2)//If CL arg is provided
+	{
+		//Batch Mode - Reads commands from specified file
+		FILE *bat_file = fopen(argv[1], "r");
+		if (bat_file == NULL)//If error opening file
+		{
+			perror("Error opening batch file!");
+			return 1;//Return w/error
+		}
+
+		while (fgets(in, sizeof(in), bat_file) != NULL)
+		{
+			printf("<%s>\n |> %s", getcwd(cwd_main, sizeof(cwd_main)), in);
+			exec_cmd(in);
+		}
+
+		fclose(bat_file);
+
+		return 0;
+	}
+	else if (argc > 2)//If more than two args are provided
+	{
+		fprintf(stderr, "Usage: %s [batchfile]\n", argv[0]);//Echo intended usage
+		return 1;//Exit w/error
+	}
+	
+	//Get current working directory
 	if (getcwd(cwd_main, sizeof(cwd_main)) == NULL)
 	{
 		perror("'getcwd()' ERROR");
@@ -79,7 +131,7 @@ int main()
 		return 1;//Exit w/error
 	}
 
-	//Run loop
+	//Interactive Mode - Solicit input from user via prompt
 	while (1) 
 	{
 		printf("<%s>\n |> ", getcwd(cwd_main, sizeof(cwd_main)));//Prompt for input
