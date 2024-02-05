@@ -3,28 +3,30 @@
 //Change the current working directory
 void ch_dir(char *path)
 {
-    //If path argument is NULL, no directory was provided
-    if (path == NULL) 
-    {
-        //Buffer to store current working directory path
-        char cwd[1024];
+	//Buffer to store current working directory path
+	char cwd[1024];
+    
+	//If path argument is NULL, no directory was provided
+	if (path == NULL) 
+	{
+		//Use getcwd to get the current working directory.
+		//getcwd fills the array 'cwd' with the absolute pathname of the current working directory
 
-        //Use getcwd to get the current working directory.
-        //getcwd fills the array 'cwd' with the absolute pathname of the current working directory
-	
-        if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
-	else
-		perror("'getcwd()' ERROR");//Print error mssg
-    }	
-    else 
-    {
-        //If path is provided, change the directory to the specified path
-	
-	//If 'chdir()' returns a non-zero value, an error occurred
-	if (chdir(path) != 0)
-		perror("'chdir()' ERROR");
-    }
+		if (getcwd(cwd, sizeof(cwd)) != NULL)
+			printf("%s\n", cwd);
+		else
+			perror("'getcwd()' ERROR");//Print error mssg
+	}	
+	else 
+	{
+		//If path is provided, change the directory to the specified path
+
+		//If 'chdir()' returns a non-zero value, an error occurred
+		if (chdir(path) != 0)
+			perror("'chdir()' ERROR");
+		else
+			setenv("PWD", getcwd(cwd, sizeof(cwd)), 1);
+	}
 }
 
 //Clear the screen

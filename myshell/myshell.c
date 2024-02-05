@@ -12,7 +12,7 @@ void exec_cmd(char *in)
 	{
 		if (strcmp(tkn, "cd") == 0)//Change directories command
 		{
-			tkn = strtok(NULL, dlim);
+			tkn = strtok(NULL, "\n");//Use newline as delim, not space
 			ch_dir(tkn);
 		}
 		else if (strcmp(tkn, "clr") == 0)//Clear screen command
