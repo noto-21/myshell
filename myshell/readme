@@ -1,2 +1,50 @@
-Placeholder
-Text
+# User Manual for myshell
+
+## Introduction
+
+Welcome to myshell, a simple command-line shell designed for UNIX platforms. This manual provides a comprehensive guide on how to use myshell, covering essential features and concepts. Ensure that you read through this manual to effectively navigate and utilize myshell.
+
+### Overview
+
+myshell is a command-line interface that provides a set of commands for interacting with the operating system. It supports both interactive mode, where you enter commands directly, and batch mode, where commands are read from a file.
+
+### Running myshell
+
+To run myshell, open a terminal and navigate to the directory containing the myshell executable. You can run myshell in interactive mode without any arguments:
+
+```bash ./myshell```
+
+For batch mode, provide a batch file as an argument:
+
+```bash ./myshell path/to/batchfile```
+
+### Internal Commands
+
+myshell supports the following internal commands:
+
+- **cd [directory]:** Change the current working directory.
+- **clr:** Clear the screen.
+- **dir [directory]:** List the contents of a directory.
+- **environ:** Display the current environment variables.
+- **echo [message]:** Print a message to the screen.
+- **help:** Display the user manual.
+- **pause:** Pause the shell until the Enter key is pressed.
+- **quit/exit:** Exit the shell.
+
+### External Commands
+
+For external commands, myshell can execute any command available in the system. Simply type the command, and myshell will execute it.
+
+### Batch Mode
+
+In batch mode, myshell reads commands from a specified file. Provide the batch file as a command-line argument when launching myshell.
+
+```bash ./myshell batchfile```
+
+### Environmental Variables
+
+myshell allows you to display environmental variables, via the command `environ`.
+
+This concludes the myshell user manual.
+
+Happy scripting!
