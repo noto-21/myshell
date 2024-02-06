@@ -10,7 +10,7 @@
 | Bilal Khalil | 100824635 |
 | Jason Stuckess | 100248154 |
 
-All documentation for ***myshell*** can be found in the shell's [[readme](./myshell/readme)] file.
+This is the repository's ***README*** file.  All documentation for ***myshell*** can be found in the shell's ***[[readme](./myshell/readme)]*** file.
 
 Link to repo (in case of issue): [noto-21/myshell](https://github.com/noto-21/myshell)
 
