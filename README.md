@@ -1,7 +1,7 @@
 <hr>
 <div align="center">
 
-# Lab #2 - My Custom Shell
+# Lab #2 - A Simple Shell
 
 | Name | Student No. |
 |:---:|:---:|
