@@ -53,6 +53,9 @@ dkms.conf
 
 # Docs
 *.pdf
+*.PNG
+*.JPG
+*.JPEG
 
 # Misc.
 *.zip
