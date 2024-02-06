@@ -1,3 +1,5 @@
+<hr>
+
 # User Manual for myshell
 
 ## Introduction
@@ -47,6 +49,33 @@ An example batchfile, titled `batchfile_example.txt`, has been included in this 
 
 myshell allows you to display environmental variables, via the command `environ`.
 
+### General Shell Features
+Please note that myshell does not currently incorporate these features, as per the requirements of the lab.
+
+#### Input/Output Redirection
+
+You can redirect the input or output of a command using the following symbols:
+
+    > : Redirects the output of a command to a file, overwriting the file if it already exists.
+    >> : Redirects the output of a command to a file, appending the output to the end of the file if it already exists.
+    < : Redirects the input of a command from a file.
+
+Example: `ls > output.txt`
+
+This command will list the contents of the current directory and write the output to a file named output.txt.
+
+#### Background Program Execution
+
+You can run commands in the background by appending an ampersand (&) to the end of the command. This allows you to continue using the shell while the command executes.
+
+Example: `long_running_command &`
+
+This will execute long_running_command in the background.
+
+## Conclusion
+
 This concludes the myshell user manual.
 
 Happy scripting!
+
+<hr>
