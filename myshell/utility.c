@@ -131,7 +131,7 @@ void disp_man()
 	char *readme_path = getenv("readme_path");
 	if (readme_path == NULL)//If problem finding path occurs
 	{
-		fprintf(stderr, "ERROR: Unable to retrieve 'readme_path'!");
+		fprintf(stderr, "ERROR: Unable to retrieve 'readme_path'!\n");
 		return;//Exit w/error
 	}
 

@@ -74,9 +74,19 @@ void exec_cmd(char *in)
 				setenv("parent", getenv("shell"), 1);//Set parent env. var.
 				setenv("shell", cwd_child, 1);//Set shell env. var.
 				
+				//Use 'strtok' to tokenize input cmd
+				char* args[100];//Assuming max of 100 args
+				int arg_count = 0;
+
+				while (tkn != NULL)
+				{
+					args[arg_count++] = tkn;
+					tkn = strtok(NULL, dlim);
+				}
+				args[arg_count] = NULL;//Set last arg to null
+
 				//Use execvp to consider paths w/spaces
-				char* args[] = {tkn, NULL};
-				execvp(tkn, args);
+				execvp(args[0], args);
 
 				perror("'exec()' ERROR");
 				exit(1);
@@ -100,7 +110,7 @@ int main(int argc, char *argv[])
 		FILE *bat_file = fopen(argv[1], "r");
 		if (bat_file == NULL)//If error opening file
 		{
-			perror("Error opening batch file!");
+			perror("Error opening batch file!\n");
 			return 1;//Return w/error
 		}
 
@@ -141,7 +151,7 @@ int main(int argc, char *argv[])
 	char *shell_path_env = getenv("shell");
 	if (shell_path_env == NULL)
 	{
-		fprintf(stderr, "ERROR: Unable to retrieve shell directory path!");
+		fprintf(stderr, "ERROR: Unable to retrieve shell directory path!\n");
 		return 1;
 	}
 
@@ -180,11 +190,10 @@ int main(int argc, char *argv[])
 	closedir(dir);
 
 	if (readme_path == NULL)
-	{	
-		fprintf(stderr, "ERROR: Readme file not found in the specified directory!");
-		return 1;
+	{
+		fprintf(stderr, "ERROR: Readme file not found in the specified directory!\n");
+		return 1;//Exit w/error
 	}
-
 	//Set environment variable for readme path
 	if (setenv("readme_path", readme_path, 1) != 0)
 	{
