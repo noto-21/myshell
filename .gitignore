@@ -58,3 +58,4 @@ dkms.conf
 *.zip
 *example*
 myshell
+/Gp5/*
