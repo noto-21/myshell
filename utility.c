@@ -98,7 +98,6 @@ void list_env()
 	}
 }
 
-
 //Echo user comments
 void echo_out(char *ech)
 {
@@ -126,26 +125,73 @@ void echo_out(char *ech)
 		perror("'printf' ERROR");//Print error message if something goes wrong
 }
 
-//Display user manual via text viewer
-void disp_man()
+//Function to get the directory of the executable
+char *get_executable_directory() 
 {
-	//Get path to readme
-	char *readme_path = getenv("shell");
-	if (readme_path == NULL)//If problem finding path occurs
+	//Buffer to store the path
+	static char dir[MAX_PATH_LENGTH];
+
+	//Read the symbolic link pointing to the executable
+	ssize_t len = readlink("/proc/self/exe", dir, sizeof(dir) - 1);
+	if (len != -1) 
 	{
-		fprintf(stderr, "ERROR: Unable to retrieve 'shell'!\n");
-		return;//Exit w/error
+		dir[len] = '\0';//Null-terminate the string
+
+		//Find the last occurrence of '/' to get the directory
+		char *last_slash = strrchr(dir, '/');
+		if (last_slash != NULL) 
+		{
+			*(last_slash + 1) = '\0';//Null-terminate at the last '/'
+			return dir;
+		}
 	}
 
-	//Construct command with double quotes
-	char command[1024];
-	snprintf(command, sizeof(command), "more \"%s\"", readme_path);
+	return NULL;//Return NULL on failure
+}
 
-	//Open manual using 'more'
-	int res = system(command);
-	//Check for errors
-	if (res != 0)
-		fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
+//Function to check if a file exists
+int file_exists(const char *filename) 
+{
+	struct stat buffer;
+	return (stat(filename, &buffer) == 0);
+}
+
+//Function to initialize the environment variable for the readme file
+void init_readme_env() 
+{
+	char *executable_dir = get_executable_directory();
+	if (executable_dir != NULL) 
+	{
+		//Construct the path to the readme file
+		char readme_path[MAX_PATH_LENGTH];
+		snprintf(readme_path, sizeof(readme_path), "%sreadme", executable_dir);
+
+		//Check if the readme file exists
+		if (file_exists(readme_path)) 
+		{
+			//Set the environment variable with the path
+			setenv("MY_SHELL_README", readme_path, 1);
+		}
+	}
+}
+
+//Function to display the user manual
+void disp_man() 
+{
+	//Retrieve the path from the environment variable
+	char *readme_path = getenv("MY_SHELL_README");
+	if (readme_path != NULL) 
+	{
+		//Display the contents of the readme file using a text viewer
+		char command[MAX_PATH_LENGTH + 10];//Add extra space for command
+		snprintf(command, sizeof(command), "more \"%s\"", readme_path);
+
+		int res = system(command);
+		if (res != 0)
+			fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
+	}
+	else
+		fprintf(stderr, "ERROR: README file not found!\n");
 }
 
 //Pause the shell

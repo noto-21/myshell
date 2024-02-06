@@ -17,6 +17,7 @@
 #include <fcntl.h>//File control
 #include <dirent.h>//Directory manipulation
 #include <ctype.h>//String/Char manipulation
+#include <sys/stat.h>//System functions
 
 //Change directories function (cd)
 void ch_dir(char *path);
@@ -44,5 +45,8 @@ void quit();
 
 //Execute commands
 void exec_cmd(char *in);
+
+//Set readme env. var.
+void init_readme_env();
 
 #endif

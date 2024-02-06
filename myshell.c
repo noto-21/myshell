@@ -103,10 +103,10 @@ void exec_cmd(char *in)
 
 int main(int argc, char *argv[])
 {
+	init_readme_env();
+
 	char in[1024];//Input buffer
 	char cwd_main[1024];//CWD buffer
-	FILE *fp;
-	char last_command[4096];
 
 	if (argc == 2)//If CL arg is provided
 	{
@@ -142,41 +142,9 @@ int main(int argc, char *argv[])
 	}
 
 	//Set shell env. var.
-	char shell_path[4096], relat[2048];
-	fp = popen("echo $_", "r");
-	if (fp == NULL)
-	{
-        	perror("popen() failed");
-        	return 1;
-    	}
-	
-	if (fgets(last_command, sizeof(last_command), fp) != NULL)
-	{
-		//Remove trailing newline if present
-		last_command[strcspn(last_command, "\n")] = '\0';
+	char shell_path[4096];
 
-		//Copy the value of _ into relat
-		if (strlen(last_command) > 1)
-			strcpy(relat, last_command + 1);
-		else
-		{
-			fprintf(stderr, "Invalid value of $_\n");
-			return 1;
-        	}
-	}
-	else 
-	{
-		fprintf(stderr, "Failed to read $_\n");
-		return 1;
-	}
-
-	pclose(fp);
-
-	//Fix last_command
-	for (int i = 0; i < strlen(relat); i++)
-		relat[i] = relat[i + 1];
-
-	snprintf(shell_path, sizeof(shell_path), "%s/%s", cwd_main, relat);//Format as safe/size-limited string
+	snprintf(shell_path, sizeof(shell_path), "%s", cwd_main);//Format as safe/size-limited string
 	if (setenv("shell", shell_path, 1) != 0)//Set environment variable
 	{
 		perror("'putenv()' ERROR");//Error message if something goes wrong
