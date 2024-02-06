@@ -1,4 +1,4 @@
 echo Hello, this is a batch file!
 dir
 cd ../
-echo There you go!
+echo Thanks for batching with myshell!
