@@ -92,8 +92,8 @@ void exec_cmd(char *in)
 int main(int argc, char *argv[])
 {
 	char in[1024];//Input buffer
-	char cwd_main[1024];//CWD buffer
-	
+	char cwd_main[1024];//CWD buffer		
+
 	if (argc == 2)//If CL arg is provided
 	{
 		//Batch Mode - Reads commands from specified file
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Usage: %s [batchfile]\n", argv[0]);//Echo intended usage
 		return 1;//Exit w/error
 	}
-	
+
 	//Get current working directory
 	if (getcwd(cwd_main, sizeof(cwd_main)) == NULL)
 	{
@@ -129,12 +129,71 @@ int main(int argc, char *argv[])
 
 	//Set shell env. var.
 	char shell_path[2048];
-	snprintf(shell_path, sizeof(shell_path), "shell=%s", cwd_main);//Format as safe/size-limited string
-	if (putenv(shell_path) != 0)//Set environment variable
+	snprintf(shell_path, sizeof(shell_path), "%s", cwd_main);//Format as safe/size-limited string
+	if (setenv("shell", shell_path, 1) != 0)//Set environment variable
 	{
 		perror("'putenv()' ERROR");//Error message if something goes wrong
 		return 1;//Exit w/error
 	}
+
+
+	//Get path to directory specified by shell env. var.
+	char *shell_path_env = getenv("shell");
+	if (shell_path_env == NULL)
+	{
+		fprintf(stderr, "ERROR: Unable to retrieve shell directory path!");
+		return 1;
+	}
+
+	//Open the directory
+	DIR *dir = opendir(shell_path_env);
+	if (dir == NULL)
+	{
+		perror("opendir() ERROR");
+		return 1;
+	}
+
+	//Search for the readme file within the directory
+	struct dirent *entry;
+	char *readme_path = NULL;
+	while ((entry = readdir(dir)) != NULL)
+	{
+		if (strcmp(entry->d_name, "readme") == 0)
+		{
+			//Found the readme file
+			size_t path_len = strlen(shell_path_env) + strlen(entry->d_name) + 2; // +2 for '/' and null terminator
+											      //Construct a path to the readme file
+			readme_path = malloc(path_len);//Allocate memory for the path
+			if (readme_path == NULL)//If error occurs
+			{
+				perror("malloc() ERROR");
+				closedir(dir);
+				return 1;
+			}
+
+			snprintf(readme_path, path_len, "%s/%s/readme", shell_path, entry->d_name);//Make the path		
+
+			break;
+		}
+	}
+
+	closedir(dir);
+
+	if (readme_path == NULL)
+	{	
+		fprintf(stderr, "ERROR: Readme file not found in the specified directory!");
+		return 1;
+	}
+
+	//Set environment variable for readme path
+	if (setenv("readme_path", readme_path, 1) != 0)
+	{
+		perror("'setenv()' ERROR");
+		free(readme_path);
+		return 1;
+	}
+
+	free(readme_path);
 
 	//Interactive Mode - Solicit input from user via prompt
 	while (1) 

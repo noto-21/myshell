@@ -127,30 +127,23 @@ void echo_out(char *ech)
 //Display user manual via text viewer
 void disp_man()
 {
-	//Get path to HOME
-	char *home_dir = getenv("HOME");
-	if (home_dir == NULL)//If problem finding path occurs
+	//Get path to readme
+	char *readme_path = getenv("readme_path");
+	if (readme_path == NULL)//If problem finding path occurs
 	{
-		fprintf(stderr, "ERROR: Unable to retrieve home directory!");
+		fprintf(stderr, "ERROR: Unable to retrieve 'readme_path'!");
 		return;//Exit w/error
 	}
 
-	//Path to readme
-	char readme_path[MAX_PATH_LENGTH + 16];	
-	snprintf(readme_path, sizeof(readme_path), "%s/.myshell/readme", home_dir);
+	//Construct command with double quotes
+	char command[1024];
+	snprintf(command, sizeof(command), "more \"%s\"", readme_path);
 
-#ifdef _WIN32//If on Windows, open the manual with notepad
-	int res = system("notepad.exe readme");
-	//Check for errors
-	if (res != 0)
-		fprintf(stderr, "ERROR: Unable to display user manual using 'notepad.exe'!\n");
-#else
 	//Open manual using 'more'
-	int res = system("more ~/.myshell/readme");
+	int res = system(command);
 	//Check for errors
 	if (res != 0)
 		fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
-#endif
 }
 
 //Pause the shell
