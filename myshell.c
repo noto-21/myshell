@@ -104,7 +104,9 @@ void exec_cmd(char *in)
 int main(int argc, char *argv[])
 {
 	char in[1024];//Input buffer
-	char cwd_main[1024];//CWD buffer		
+	char cwd_main[1024];//CWD buffer
+	FILE *fp;
+	char last_command[4096];
 
 	if (argc == 2)//If CL arg is provided
 	{
@@ -140,71 +142,46 @@ int main(int argc, char *argv[])
 	}
 
 	//Set shell env. var.
-	char shell_path[2048];
-	snprintf(shell_path, sizeof(shell_path), "%s", cwd_main);//Format as safe/size-limited string
+	char shell_path[4096], relat[2048];
+	fp = popen("echo $_", "r");
+	if (fp == NULL)
+	{
+        	perror("popen() failed");
+        	return 1;
+    	}
+	
+	if (fgets(last_command, sizeof(last_command), fp) != NULL)
+	{
+		//Remove trailing newline if present
+		last_command[strcspn(last_command, "\n")] = '\0';
+
+		//Copy the value of _ into relat
+		if (strlen(last_command) > 1)
+			strcpy(relat, last_command + 1);
+		else
+		{
+			fprintf(stderr, "Invalid value of $_\n");
+			return 1;
+        	}
+	}
+	else 
+	{
+		fprintf(stderr, "Failed to read $_\n");
+		return 1;
+	}
+
+	pclose(fp);
+
+	//Fix last_command
+	for (int i = 0; i < strlen(relat); i++)
+		relat[i] = relat[i + 1];
+
+	snprintf(shell_path, sizeof(shell_path), "%s/%s", cwd_main, relat);//Format as safe/size-limited string
 	if (setenv("shell", shell_path, 1) != 0)//Set environment variable
 	{
 		perror("'putenv()' ERROR");//Error message if something goes wrong
 		return 1;//Exit w/error
 	}
-
-
-	//Get path to directory specified by shell env. var.
-	char *shell_path_env = getenv("shell");
-	if (shell_path_env == NULL)
-	{
-		fprintf(stderr, "ERROR: Unable to retrieve shell directory path!\n");
-		return 1;
-	}
-
-	//Open the directory
-	DIR *dir = opendir(shell_path_env);
-	if (dir == NULL)
-	{
-		perror("opendir() ERROR");
-		return 1;
-	}
-
-	//Search for the readme file within the directory
-	struct dirent *entry;
-	char *readme_path = NULL;
-	while ((entry = readdir(dir)) != NULL)
-	{
-		if (strcmp(entry->d_name, "readme") == 0)
-		{
-			//Found the readme file
-			size_t path_len = strlen(shell_path_env) + strlen(entry->d_name) + 2; // +2 for '/' and null terminator
-											      //Construct a path to the readme file
-			readme_path = malloc(path_len);//Allocate memory for the path
-			if (readme_path == NULL)//If error occurs
-			{
-				perror("malloc() ERROR");
-				closedir(dir);
-				return 1;
-			}
-
-			snprintf(readme_path, path_len, "%s/%s/readme", shell_path, entry->d_name);//Make the path		
-
-			break;
-		}
-	}
-
-	closedir(dir);
-
-	if (readme_path == NULL)
-	{
-		fprintf(stderr, "ERROR: Readme file not found in the specified directory!\n");
-		return 1;//Exit w/error
-	}
-	//Set environment variable for readme path
-	if (setenv("readme_path", readme_path, 1) != 0)
-	{
-		perror("'setenv()' ERROR");
-		free(readme_path);
-		return 1;
-	}
-
-	free(readme_path);
 
 	//Interactive Mode - Solicit input from user via prompt
 	while (1) 

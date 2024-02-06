@@ -130,10 +130,10 @@ void echo_out(char *ech)
 void disp_man()
 {
 	//Get path to readme
-	char *readme_path = getenv("readme_path");
+	char *readme_path = getenv("shell");
 	if (readme_path == NULL)//If problem finding path occurs
 	{
-		fprintf(stderr, "ERROR: Unable to retrieve 'readme_path'!\n");
+		fprintf(stderr, "ERROR: Unable to retrieve 'shell'!\n");
 		return;//Exit w/error
 	}
 
