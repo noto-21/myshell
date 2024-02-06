@@ -15,6 +15,7 @@
 #include <fcntl.h>//File control
 #include <dirent.h>//Directory manipulation
 #include <ctype.h>//String/Char manipulation
+#include <Windows.h>//Windows functions
 
 //Change directories function (cd)
 void ch_dir(char *path);

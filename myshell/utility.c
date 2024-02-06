@@ -5,6 +5,8 @@
 
 #include "myshell.h"//Include header libraries
 
+#define MAX_PATH_LENGTH 2048//Stores the max allowable length of a path
+
 //Change the current working directory
 void ch_dir(char *path)
 {
@@ -125,23 +127,29 @@ void echo_out(char *ech)
 //Display user manual via text viewer
 void disp_man()
 {
+	//Get path to HOME
+	char *home_dir = getenv("HOME");
+	if (home_dir == NULL)//If problem finding path occurs
+	{
+		fprintf(stderr, "ERROR: Unable to retrieve home directory!");
+		return;//Exit w/error
+	}
+
+	//Path to readme
+	char readme_path[MAX_PATH_LENGTH + 16];	
+	snprintf(readme_path, sizeof(readme_path), "%s/.myshell/readme", home_dir);
+
 #ifdef _WIN32//If on Windows, open the manual with notepad
 	int res = system("notepad.exe readme");
 	//Check for errors
 	if (res != 0)
 		fprintf(stderr, "ERROR: Unable to display user manual using 'notepad.exe'!\n");
 #else
-	//Check if 'more' is available on the system
-	if (system("which more > /dev/null") == 0)
-	{
-		//Open manual using 'more'
-		int res = system("more readme");
-		//Check for errors
-		if (res != 0)
-			fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
-	}
-	else//'more' is not on the system
-		fprintf(stderr, "ERROR: 'more' command is not available on this system!\n");
+	//Open manual using 'more'
+	int res = system("more ~/.myshell/readme");
+	//Check for errors
+	if (res != 0)
+		fprintf(stderr, "ERROR: Unable to display user manual using 'more'!\n");
 #endif
 }
 
